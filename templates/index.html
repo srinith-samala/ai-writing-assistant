@@ -4,101 +4,168 @@
     <title>AI Writing Assistant</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #e2e8f0; min-height: 100vh; padding: 40px 20px; }
-        .container { max-width: 750px; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 36px; }
-        .header h1 { font-size: 32px; font-weight: 800; color: #fff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a14; color: #e2e8f0; min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        .header { text-align: center; margin-bottom: 40px; }
+        .badge { display: inline-block; background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.3); color: #818cf8; font-size: 11px; padding: 4px 14px; border-radius: 20px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+        .header h1 { font-size: 36px; font-weight: 800; color: #fff; letter-spacing: -1px; }
         .header h1 span { color: #818cf8; }
-        .header p { color: #64748b; margin-top: 8px; font-size: 14px; }
-        .card { background: #1e1e2e; border: 1px solid #2a2a3e; border-radius: 14px; padding: 24px; margin-bottom: 20px; }
-        textarea { width: 100%; height: 160px; background: #13131f; border: 1px solid #2a2a3e; border-radius: 10px; padding: 14px; font-size: 15px; color: #e2e8f0; resize: vertical; outline: none; font-family: inherit; transition: border 0.2s; }
+        .header p { color: #475569; margin-top: 8px; font-size: 14px; }
+
+        .input-card { background: #13131f; border: 1px solid #1e1e32; border-radius: 16px; padding: 24px; margin-bottom: 16px; }
+        textarea { width: 100%; height: 180px; background: #0a0a14; border: 1px solid #1e1e32; border-radius: 10px; padding: 16px; font-size: 15px; color: #e2e8f0; resize: vertical; outline: none; font-family: inherit; transition: border 0.2s; line-height: 1.7; }
         textarea:focus { border-color: #818cf8; }
-        .char-count { text-align: right; font-size: 11px; color: #475569; margin-top: 6px; }
-        .buttons { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
-        button { padding: 11px 22px; border: none; border-radius: 9px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .btn-improve { background: #818cf8; color: white; }
-        .btn-improve:hover { background: #6366f1; }
-        .btn-grammar { background: #34d399; color: #0f1f17; }
-        .btn-grammar:hover { background: #10b981; }
-        .btn-shorter { background: #fb923c; color: white; }
-        .btn-shorter:hover { background: #f97316; }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .output-card { background: #1e1e2e; border: 1px solid #2a2a3e; border-radius: 14px; padding: 24px; display: none; }
-        .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .output-label { font-size: 11px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 1px; }
-        .copy-btn { padding: 6px 14px; background: transparent; border: 1px solid #2a2a3e; border-radius: 7px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.2s; }
-        .copy-btn:hover { border-color: #818cf8; color: #818cf8; }
-        .copy-btn.copied { border-color: #34d399; color: #34d399; }
-        #output { font-size: 15px; color: #e2e8f0; line-height: 1.8; white-space: pre-wrap; }
-        .loading { display: flex; align-items: center; gap: 10px; color: #64748b; font-size: 14px; }
-        .dot { width: 7px; height: 7px; background: #818cf8; border-radius: 50%; animation: bounce 1s infinite; }
-        .dot:nth-child(2) { animation-delay: 0.15s; }
-        .dot:nth-child(3) { animation-delay: 0.3s; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        textarea::placeholder { color: #334155; }
+        .meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #334155; }
+
+        .lang-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #1e1e32; }
+        .lang-row label { font-size: 12px; color: #64748b; white-space: nowrap; }
+        .lang-input { flex: 1; background: #0a0a14; border: 1px solid #1e1e32; border-radius: 8px; padding: 8px 12px; color: #e2e8f0; font-size: 13px; outline: none; }
+        .lang-input:focus { border-color: #818cf8; }
+
+        .buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+        .btn { padding: 12px 8px; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .btn span.icon { font-size: 18px; }
+        .btn span.label { font-size: 11px; opacity: 0.85; }
+        .btn-improve { background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.3); color: #818cf8; }
+        .btn-improve:hover { background: rgba(129,140,248,0.25); }
+        .btn-grammar { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.3); color: #34d399; }
+        .btn-grammar:hover { background: rgba(52,211,153,0.25); }
+        .btn-shorter { background: rgba(251,146,60,0.15); border: 1px solid rgba(251,146,60,0.3); color: #fb923c; }
+        .btn-shorter:hover { background: rgba(251,146,60,0.25); }
+        .btn-expand { background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: #38bdf8; }
+        .btn-expand:hover { background: rgba(56,189,248,0.25); }
+        .btn-summarize { background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.3); color: #a78bfa; }
+        .btn-summarize:hover { background: rgba(167,139,250,0.25); }
+        .btn-translate { background: rgba(248,113,113,0.15); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+        .btn-translate:hover { background: rgba(248,113,113,0.25); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .progress-bar { height: 2px; background: #1e1e32; border-radius: 2px; margin-top: 16px; overflow: hidden; display: none; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #818cf8, #38bdf8); border-radius: 2px; animation: progress 1.5s ease-in-out infinite; }
+        @keyframes progress { 0% { width: 0%; margin-left: 0; } 50% { width: 60%; margin-left: 20%; } 100% { width: 0%; margin-left: 100%; } }
+
+        .output-card { background: #13131f; border: 1px solid #1e1e32; border-radius: 16px; padding: 24px; display: none; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .output-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .output-label { font-size: 10px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 2px; }
+        .output-actions { display: flex; gap: 8px; }
+        .action-btn { padding: 5px 12px; background: transparent; border: 1px solid #1e1e32; border-radius: 7px; color: #64748b; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .action-btn:hover { border-color: #818cf8; color: #818cf8; }
+        .action-btn.success { border-color: #34d399; color: #34d399; }
+        #output { font-size: 15px; color: #cbd5e1; line-height: 1.8; white-space: pre-wrap; }
+
+        @media (max-width: 500px) { .buttons { grid-template-columns: repeat(2, 1fr); } .header h1 { font-size: 26px; } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>✍️ AI Writing <span>Assistant</span></h1>
-            <p>Improve your writing instantly with AI</p>
+<div class="container">
+    <div class="header">
+        <div class="badge">✦ AI Powered</div>
+        <h1>Writing <span>Assistant</span></h1>
+        <p>6 AI tools to improve, fix, shorten, expand, summarize & translate your text</p>
+    </div>
+
+    <div class="input-card">
+        <textarea id="inputText" placeholder="Paste or type your text here..." oninput="updateMeta()"></textarea>
+        <div class="meta">
+            <span><span id="wordCount">0</span> words</span>
+            <span><span id="charCount">0</span> characters</span>
         </div>
 
-        <div class="card">
-            <textarea id="inputText" placeholder="Paste your text here..." oninput="updateCount()"></textarea>
-            <div class="char-count"><span id="charCount">0</span> characters</div>
-            <div class="buttons">
-                <button class="btn-improve" onclick="improve('improve')">✨ Improve</button>
-                <button class="btn-grammar" onclick="improve('grammar')">✅ Fix Grammar</button>
-                <button class="btn-shorter" onclick="improve('shorter')">✂️ Make Shorter</button>
-            </div>
+        <div class="lang-row">
+            <label>🌍 Translate to:</label>
+            <input class="lang-input" id="langInput" placeholder="e.g. Spanish, Hindi, French, Japanese..." />
         </div>
 
-        <div class="output-card" id="outputCard">
-            <div class="output-header">
-                <span class="output-label">✦ AI Result</span>
-                <button class="copy-btn" id="copyBtn" onclick="copyText()">Copy</button>
-            </div>
-            <div id="output"></div>
+        <div class="buttons">
+            <button class="btn btn-improve" onclick="improve('improve')">
+                <span class="icon">✨</span><span>Improve</span><span class="label">Make it better</span>
+            </button>
+            <button class="btn btn-grammar" onclick="improve('grammar')">
+                <span class="icon">✅</span><span>Fix Grammar</span><span class="label">Fix mistakes</span>
+            </button>
+            <button class="btn btn-shorter" onclick="improve('shorter')">
+                <span class="icon">✂️</span><span>Shorten</span><span class="label">Make it brief</span>
+            </button>
+            <button class="btn btn-expand" onclick="improve('expand')">
+                <span class="icon">📝</span><span>Expand</span><span class="label">Add more detail</span>
+            </button>
+            <button class="btn btn-summarize" onclick="improve('summarize')">
+                <span class="icon">📋</span><span>Summarize</span><span class="label">Key points only</span>
+            </button>
+            <button class="btn btn-translate" onclick="improve('translate')">
+                <span class="icon">🌍</span><span>Translate</span><span class="label">Any language</span>
+            </button>
+        </div>
+
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill"></div>
         </div>
     </div>
 
-    <script>
-        function updateCount() {
-            const len = document.getElementById("inputText").value.length;
-            document.getElementById("charCount").textContent = len;
+    <div class="output-card" id="outputCard">
+        <div class="output-top">
+            <span class="output-label">✦ AI Result</span>
+            <div class="output-actions">
+                <button class="action-btn" id="copyBtn" onclick="copyText()">Copy</button>
+                <button class="action-btn" onclick="clearAll()">Clear</button>
+            </div>
+        </div>
+        <div id="output"></div>
+    </div>
+</div>
+
+<script>
+    function updateMeta() {
+        const text = document.getElementById("inputText").value;
+        document.getElementById("charCount").textContent = text.length;
+        document.getElementById("wordCount").textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+    }
+
+    async function improve(mode) {
+        const text = document.getElementById("inputText").value.trim();
+        if (!text) return;
+
+        if (mode === "translate") {
+            const lang = document.getElementById("langInput").value.trim();
+            if (!lang) { alert("Please enter a language to translate to!"); return; }
         }
 
-        async function improve(mode) {
-            const text = document.getElementById("inputText").value.trim();
-            if (!text) return;
+        const btns = document.querySelectorAll(".btn");
+        btns.forEach(b => b.disabled = true);
 
-            const btns = document.querySelectorAll("button");
-            btns.forEach(b => b.disabled = true);
+        document.getElementById("progressBar").style.display = "block";
+        document.getElementById("outputCard").style.display = "none";
 
-            const outputCard = document.getElementById("outputCard");
-            const output = document.getElementById("output");
-            outputCard.style.display = "block";
-            output.innerHTML = '<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>AI is thinking...</span></div>';
+        const lang = document.getElementById("langInput").value.trim();
+        const res = await fetch("/improve", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text, mode, lang })
+        });
+        const data = await res.json();
 
-            const res = await fetch("/improve", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text, mode })
-            });
-            const data = await res.json();
-            output.textContent = data.result;
-            btns.forEach(b => b.disabled = false);
-        }
+        document.getElementById("progressBar").style.display = "none";
+        document.getElementById("outputCard").style.display = "block";
+        document.getElementById("output").textContent = data.result;
+        btns.forEach(b => b.disabled = false);
+    }
 
-        function copyText() {
-            const text = document.getElementById("output").textContent;
-            navigator.clipboard.writeText(text);
-            const btn = document.getElementById("copyBtn");
-            btn.textContent = "Copied ✓";
-            btn.classList.add("copied");
-            setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 2000);
-        }
-    </script>
+    function copyText() {
+        navigator.clipboard.writeText(document.getElementById("output").textContent);
+        const btn = document.getElementById("copyBtn");
+        btn.textContent = "Copied ✓";
+        btn.classList.add("success");
+        setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("success"); }, 2000);
+    }
+
+    function clearAll() {
+        document.getElementById("inputText").value = "";
+        document.getElementById("outputCard").style.display = "none";
+        updateMeta();
+    }
+</script>
 </body>
 </html>
