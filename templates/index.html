@@ -20,7 +20,6 @@
 
         .page { position: relative; z-index: 1; }
 
-        /* NAVBAR */
         nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             background: rgba(5,5,15,0.8);
@@ -47,7 +46,6 @@
         }
         .nav-cta:hover { background: rgba(99,102,241,0.28) !important; color: #fff !important; }
 
-        /* HERO */
         .hero {
             min-height: 100vh; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
@@ -74,7 +72,7 @@
         .hero-sub {
             font-size: 17px; color: rgba(255,255,255,0.36);
             max-width: 500px; line-height: 1.7; margin-bottom: 44px;
-            font-weight: 400; letter-spacing: -0.3px; font-family: 'Geist', sans-serif;
+            font-weight: 400; letter-spacing: -0.3px;
         }
 
         .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 52px; }
@@ -103,15 +101,14 @@
         }
         .stat { text-align: center; }
         .stat-num { font-size: 26px; font-weight: 700; font-family: 'Geist', sans-serif; color: #fff; letter-spacing: -1px; }
-        .stat-label { font-size: 10px; color: rgba(255,255,255,0.25); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; font-family: 'Geist', sans-serif; }
+        .stat-label { font-size: 10px; color: rgba(255,255,255,0.25); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* FEATURES */
         .features-strip { padding: 100px 24px; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .features-strip-inner { max-width: 960px; margin: 0 auto; }
         .section-header { text-align: center; margin-bottom: 52px; }
-        .section-tag { font-size: 11px; color: #a5b4fc; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; font-family: 'Geist', sans-serif; }
+        .section-tag { font-size: 11px; color: #a5b4fc; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
         .section-title { font-size: clamp(28px, 3.5vw, 42px); font-weight: 700; font-family: 'Geist', sans-serif; letter-spacing: -2px; color: #fff; }
-        .section-sub { font-size: 14px; color: rgba(255,255,255,0.3); margin-top: 10px; font-family: 'Geist', sans-serif; letter-spacing: -0.2px; }
+        .section-sub { font-size: 14px; color: rgba(255,255,255,0.3); margin-top: 10px; letter-spacing: -0.2px; }
 
         .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
         .feature-card {
@@ -128,9 +125,8 @@
         .feature-card:hover { background: rgba(99,102,241,0.06); border-color: rgba(99,102,241,0.2); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
         .feature-icon { font-size: 26px; margin-bottom: 14px; display: block; }
         .feature-name { font-size: 14px; font-weight: 600; font-family: 'Geist', sans-serif; color: #fff; margin-bottom: 8px; letter-spacing: -0.4px; }
-        .feature-desc { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.7; font-family: 'Geist', sans-serif; letter-spacing: -0.1px; }
+        .feature-desc { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.7; letter-spacing: -0.1px; }
 
-        /* TOOL */
         .tool-section { padding: 100px 24px; }
         .tool-wrapper { max-width: 980px; margin: 0 auto; }
         .tool-layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
@@ -147,10 +143,10 @@
         }
         textarea:focus { border-color: rgba(99,102,241,0.45); box-shadow: 0 0 0 3px rgba(99,102,241,0.08); }
         textarea::placeholder { color: rgba(255,255,255,0.15); }
-        .meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.2); font-family: 'Geist', sans-serif; }
+        .meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.2); }
         .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 14px 0; }
         .lang-row { display: flex; align-items: center; gap: 10px; }
-        .lang-row label { font-size: 12px; color: rgba(255,255,255,0.3); white-space: nowrap; font-family: 'Geist', sans-serif; letter-spacing: -0.2px; }
+        .lang-row label { font-size: 12px; color: rgba(255,255,255,0.3); white-space: nowrap; letter-spacing: -0.2px; }
         .lang-input {
             flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.07);
             border-radius: 10px; padding: 8px 14px; color: #e2e8f0; font-size: 13px;
@@ -188,54 +184,81 @@
         .output-card { padding: 22px; display: none; margin-top: 14px; animation: fadeUp 0.3s ease; }
         @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         .output-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .output-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(90deg,#a5b4fc,#ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Geist', sans-serif; }
+        .output-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(90deg,#a5b4fc,#ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .out-btns { display: flex; gap: 8px; }
         .out-btn { padding: 5px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; color: rgba(255,255,255,0.36); font-size: 11px; cursor: pointer; transition: all 0.2s; font-family: 'Geist', sans-serif; font-weight: 500; letter-spacing: -0.2px; }
         .out-btn:hover { border-color: rgba(99,102,241,0.4); color: #a5b4fc; }
         .out-btn.ok { border-color: rgba(16,185,129,0.4); color: #6ee7b7; }
         #output { font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.85; white-space: pre-wrap; font-family: 'Geist', sans-serif; letter-spacing: -0.2px; }
 
-        /* HISTORY */
         .history-panel { padding: 20px; position: sticky; top: 84px; height: fit-content; max-height: calc(100vh - 104px); overflow-y: auto; }
         .history-panel::-webkit-scrollbar { width: 3px; }
         .history-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
         .history-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .history-ttl { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(90deg,#a5b4fc,#ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Geist', sans-serif; }
-        .clr-btn { font-size: 11px; color: rgba(255,255,255,0.2); background: none; border: none; cursor: pointer; font-family: 'Geist', sans-serif; transition: color 0.2s; letter-spacing: -0.2px; }
+        .history-ttl { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(90deg,#a5b4fc,#ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .clr-btn { font-size: 11px; color: rgba(255,255,255,0.2); background: none; border: none; cursor: pointer; font-family: 'Geist', sans-serif; transition: color 0.2s; }
         .clr-btn:hover { color: #f9a8d4; }
-        .h-empty { text-align: center; padding: 32px 10px; color: rgba(255,255,255,0.16); font-size: 12px; line-height: 2; font-family: 'Geist', sans-serif; }
+        .h-empty { text-align: center; padding: 32px 10px; color: rgba(255,255,255,0.16); font-size: 12px; line-height: 2; }
         .h-empty span { font-size: 24px; display: block; margin-bottom: 8px; opacity: 0.4; }
         .h-item { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.22s; }
         .h-item:hover { border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.06); transform: translateX(3px); }
-        .h-mode { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-family: 'Geist', sans-serif; }
-        .h-input { font-size: 11px; color: rgba(255,255,255,0.28); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; font-family: 'Geist', sans-serif; }
-        .h-output { font-size: 11px; color: rgba(255,255,255,0.48); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Geist', sans-serif; }
-        .h-time { font-size: 9px; color: rgba(255,255,255,0.14); margin-top: 6px; font-family: 'Geist', sans-serif; }
+        .h-mode { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .h-input { font-size: 11px; color: rgba(255,255,255,0.28); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+        .h-output { font-size: 11px; color: rgba(255,255,255,0.48); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .h-time { font-size: 9px; color: rgba(255,255,255,0.14); margin-top: 6px; }
 
-        /* FOOTER */
         footer { border-top: 1px solid rgba(255,255,255,0.06); padding: 56px 48px 36px; margin-top: 60px; }
         .footer-inner { max-width: 980px; margin: 0 auto; }
         .footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; margin-bottom: 44px; }
         .footer-brand .logo { font-size: 18px; font-weight: 700; font-family: 'Geist', sans-serif; background: linear-gradient(135deg,#a5b4fc,#ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; letter-spacing: -0.5px; }
-        .footer-brand p { font-size: 12px; color: rgba(255,255,255,0.22); max-width: 200px; line-height: 1.8; font-family: 'Geist', sans-serif; letter-spacing: -0.1px; }
-        .footer-links h4 { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; font-family: 'Geist', sans-serif; }
-        .footer-links a { display: block; font-size: 13px; color: rgba(255,255,255,0.24); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; font-family: 'Geist', sans-serif; letter-spacing: -0.2px; }
+        .footer-brand p { font-size: 12px; color: rgba(255,255,255,0.22); max-width: 200px; line-height: 1.8; }
+        .footer-links h4 { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+        .footer-links a { display: block; font-size: 13px; color: rgba(255,255,255,0.24); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; letter-spacing: -0.2px; }
         .footer-links a:hover { color: rgba(255,255,255,0.75); }
         .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .footer-bottom p { font-size: 11px; color: rgba(255,255,255,0.17); font-family: 'Geist', sans-serif; letter-spacing: -0.1px; }
-        .footer-bottom span { font-size: 11px; color: rgba(255,255,255,0.17); font-family: 'Geist', sans-serif; }
+        .footer-bottom p { font-size: 11px; color: rgba(255,255,255,0.17); }
+        .footer-bottom span { font-size: 11px; color: rgba(255,255,255,0.17); }
 
+        /* ── MOBILE ── */
         @media(max-width:768px) {
-            nav { padding: 0 20px; }
+            nav { padding: 0 16px; height: 56px; }
             .nav-links a:not(.nav-cta) { display: none; }
-            .hero { padding: 110px 20px 70px; }
-            .hero h1 { letter-spacing: -2px; }
-            .features-grid { grid-template-columns: repeat(2,1fr); }
+            .nav-logo { font-size: 18px; }
+
+            .hero { padding: 90px 16px 60px; }
+            .hero h1 { font-size: 38px; letter-spacing: -2px; }
+            .hero-sub { font-size: 15px; }
+            .hero-btns { flex-direction: column; align-items: center; width: 100%; }
+            .btn-primary, .btn-ghost { width: 100%; text-align: center; }
+            .hero-stats { gap: 20px; padding: 20px 24px; }
+            .stat-num { font-size: 22px; }
+
+            .features-strip { padding: 60px 16px; }
+            .features-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .feature-card { padding: 20px 16px; }
+            .feature-name { font-size: 13px; }
+            .feature-desc { font-size: 11px; }
+
+            .tool-section { padding: 60px 16px; }
             .tool-layout { grid-template-columns: 1fr; }
-            .action-buttons { grid-template-columns: repeat(2,1fr); }
-            .hero-stats { gap: 24px; padding: 22px 28px; }
-            footer { padding: 44px 24px 32px; }
+            .input-card { padding: 18px; }
+            textarea { height: 150px; font-size: 14px; }
+            .action-buttons { grid-template-columns: repeat(2,1fr); gap: 8px; }
+            .ai-btn { padding: 13px 6px; }
+            .ai-btn span.icon { font-size: 17px; }
+
+            .history-panel { position: static; max-height: 400px; margin-top: 0; }
+
+            .section-title { letter-spacing: -1px; }
+            footer { padding: 40px 16px 28px; }
             .footer-top { flex-direction: column; gap: 28px; }
+            .footer-bottom { flex-direction: column; align-items: flex-start; gap: 6px; }
+        }
+
+        @media(max-width:380px) {
+            .hero h1 { font-size: 32px; letter-spacing: -1.5px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .hero-stats { flex-direction: column; gap: 16px; align-items: center; }
         }
     </style>
 </head>
