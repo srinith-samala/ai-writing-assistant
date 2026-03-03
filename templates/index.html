@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Writing Assistant</title>
+    <title>AiPenPal — AI Writing Assistant</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: #0a0a14; color: #e2e8f0; min-height: 100vh; padding: 40px 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 860px; margin: 0 auto; }
 
         .header { text-align: center; margin-bottom: 40px; }
         .badge { display: inline-block; background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.3); color: #818cf8; font-size: 11px; padding: 4px 14px; border-radius: 20px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
@@ -13,7 +13,9 @@
         .header h1 span { color: #818cf8; }
         .header p { color: #475569; margin-top: 8px; font-size: 14px; }
 
-        .input-card { background: #13131f; border: 1px solid #1e1e32; border-radius: 16px; padding: 24px; margin-bottom: 16px; }
+        .main-layout { display: grid; grid-template-columns: 1fr 280px; gap: 16px; }
+
+        .input-card { background: #13131f; border: 1px solid #1e1e32; border-radius: 16px; padding: 24px; }
         textarea { width: 100%; height: 180px; background: #0a0a14; border: 1px solid #1e1e32; border-radius: 10px; padding: 16px; font-size: 15px; color: #e2e8f0; resize: vertical; outline: none; font-family: inherit; transition: border 0.2s; line-height: 1.7; }
         textarea:focus { border-color: #818cf8; }
         textarea::placeholder { color: #334155; }
@@ -43,10 +45,10 @@
         .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .progress-bar { height: 2px; background: #1e1e32; border-radius: 2px; margin-top: 16px; overflow: hidden; display: none; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #818cf8, #38bdf8); border-radius: 2px; animation: progress 1.5s ease-in-out infinite; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #818cf8, #38bdf8); animation: progress 1.5s ease-in-out infinite; }
         @keyframes progress { 0% { width: 0%; margin-left: 0; } 50% { width: 60%; margin-left: 20%; } 100% { width: 0%; margin-left: 100%; } }
 
-        .output-card { background: #13131f; border: 1px solid #1e1e32; border-radius: 16px; padding: 24px; display: none; animation: fadeIn 0.3s ease; }
+        .output-card { background: #13131f; border: 1px solid #1e1e32; border-radius: 16px; padding: 24px; display: none; animation: fadeIn 0.3s ease; margin-top: 16px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .output-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .output-label { font-size: 10px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 2px; }
@@ -56,78 +58,167 @@
         .action-btn.success { border-color: #34d399; color: #34d399; }
         #output { font-size: 15px; color: #cbd5e1; line-height: 1.8; white-space: pre-wrap; }
 
-        @media (max-width: 500px) { .buttons { grid-template-columns: repeat(2, 1fr); } .header h1 { font-size: 26px; } }
+        /* History Panel */
+        .history-panel { background: #13131f; border: 1px solid #1e1e32; border-radius: 16px; padding: 20px; height: fit-content; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .history-title { font-size: 11px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 2px; }
+        .clear-btn { font-size: 10px; color: #475569; background: none; border: none; cursor: pointer; padding: 3px 8px; border-radius: 5px; transition: all 0.2s; }
+        .clear-btn:hover { color: #f87171; }
+        .history-empty { text-align: center; padding: 30px 10px; color: #334155; font-size: 12px; line-height: 1.8; }
+        .history-item { background: #0a0a14; border: 1px solid #1e1e32; border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+        .history-item:hover { border-color: #818cf8; }
+        .history-item-mode { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .history-item-input { font-size: 11px; color: #64748b; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item-output { font-size: 11px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item-time { font-size: 9px; color: #334155; margin-top: 6px; }
+
+        @media (max-width: 700px) { .main-layout { grid-template-columns: 1fr; } .buttons { grid-template-columns: repeat(2, 1fr); } .header h1 { font-size: 26px; } }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <div class="badge">✦ AI Powered</div>
-        <h1>Writing <span>Assistant</span></h1>
+        <h1>Ai<span>PenPal</span></h1>
         <p>6 AI tools to improve, fix, shorten, expand, summarize & translate your text</p>
     </div>
 
-    <div class="input-card">
-        <textarea id="inputText" placeholder="Paste or type your text here..." oninput="updateMeta()"></textarea>
-        <div class="meta">
-            <span><span id="wordCount">0</span> words</span>
-            <span><span id="charCount">0</span> characters</span>
-        </div>
+    <div class="main-layout">
+        <!-- Left: Main App -->
+        <div>
+            <div class="input-card">
+                <textarea id="inputText" placeholder="Paste or type your text here..." oninput="updateMeta()"></textarea>
+                <div class="meta">
+                    <span><span id="wordCount">0</span> words</span>
+                    <span><span id="charCount">0</span> characters</span>
+                </div>
 
-        <div class="lang-row">
-            <label>🌍 Translate to:</label>
-            <input class="lang-input" id="langInput" placeholder="e.g. Spanish, Hindi, French, Japanese..." />
-        </div>
+                <div class="lang-row">
+                    <label>🌍 Translate to:</label>
+                    <input class="lang-input" id="langInput" placeholder="e.g. Spanish, Hindi, French..." />
+                </div>
 
-        <div class="buttons">
-            <button class="btn btn-improve" onclick="improve('improve')">
-                <span class="icon">✨</span><span>Improve</span><span class="label">Make it better</span>
-            </button>
-            <button class="btn btn-grammar" onclick="improve('grammar')">
-                <span class="icon">✅</span><span>Fix Grammar</span><span class="label">Fix mistakes</span>
-            </button>
-            <button class="btn btn-shorter" onclick="improve('shorter')">
-                <span class="icon">✂️</span><span>Shorten</span><span class="label">Make it brief</span>
-            </button>
-            <button class="btn btn-expand" onclick="improve('expand')">
-                <span class="icon">📝</span><span>Expand</span><span class="label">Add more detail</span>
-            </button>
-            <button class="btn btn-summarize" onclick="improve('summarize')">
-                <span class="icon">📋</span><span>Summarize</span><span class="label">Key points only</span>
-            </button>
-            <button class="btn btn-translate" onclick="improve('translate')">
-                <span class="icon">🌍</span><span>Translate</span><span class="label">Any language</span>
-            </button>
-        </div>
+                <div class="buttons">
+                    <button class="btn btn-improve" onclick="improve('improve')">
+                        <span class="icon">✨</span><span>Improve</span><span class="label">Make it better</span>
+                    </button>
+                    <button class="btn btn-grammar" onclick="improve('grammar')">
+                        <span class="icon">✅</span><span>Fix Grammar</span><span class="label">Fix mistakes</span>
+                    </button>
+                    <button class="btn btn-shorter" onclick="improve('shorter')">
+                        <span class="icon">✂️</span><span>Shorten</span><span class="label">Make it brief</span>
+                    </button>
+                    <button class="btn btn-expand" onclick="improve('expand')">
+                        <span class="icon">📝</span><span>Expand</span><span class="label">Add more detail</span>
+                    </button>
+                    <button class="btn btn-summarize" onclick="improve('summarize')">
+                        <span class="icon">📋</span><span>Summarize</span><span class="label">Key points only</span>
+                    </button>
+                    <button class="btn btn-translate" onclick="improve('translate')">
+                        <span class="icon">🌍</span><span>Translate</span><span class="label">Any language</span>
+                    </button>
+                </div>
 
-        <div class="progress-bar" id="progressBar">
-            <div class="progress-fill"></div>
-        </div>
-    </div>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
 
-    <div class="output-card" id="outputCard">
-        <div class="output-top">
-            <span class="output-label">✦ AI Result</span>
-            <div class="output-actions">
-                <button class="action-btn" id="copyBtn" onclick="copyText()">Copy</button>
-                <button class="action-btn" onclick="clearAll()">Clear</button>
+            <div class="output-card" id="outputCard">
+                <div class="output-top">
+                    <span class="output-label">✦ AI Result</span>
+                    <div class="output-actions">
+                        <button class="action-btn" id="copyBtn" onclick="copyText()">Copy</button>
+                        <button class="action-btn" onclick="clearAll()">Clear</button>
+                    </div>
+                </div>
+                <div id="output"></div>
             </div>
         </div>
-        <div id="output"></div>
+
+        <!-- Right: History Panel -->
+        <div class="history-panel">
+            <div class="history-header">
+                <span class="history-title">📜 History</span>
+                <button class="clear-btn" onclick="clearHistory()">Clear all</button>
+            </div>
+            <div id="historyList">
+                <div class="history-empty">Your last 10 results<br>will appear here 👋</div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
+    const modeColors = {
+        improve: "#818cf8", grammar: "#34d399", shorter: "#fb923c",
+        expand: "#38bdf8", summarize: "#a78bfa", translate: "#f87171"
+    };
+    const modeLabels = {
+        improve: "✨ Improve", grammar: "✅ Grammar", shorter: "✂️ Shorten",
+        expand: "📝 Expand", summarize: "📋 Summarize", translate: "🌍 Translate"
+    };
+
     function updateMeta() {
         const text = document.getElementById("inputText").value;
         document.getElementById("charCount").textContent = text.length;
         document.getElementById("wordCount").textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
     }
 
+    function loadHistory() {
+        try { return JSON.parse(localStorage.getItem("aipenpal_history") || "[]"); }
+        catch { return []; }
+    }
+
+    function saveHistory(history) {
+        localStorage.setItem("aipenpal_history", JSON.stringify(history));
+    }
+
+    function renderHistory() {
+        const history = loadHistory();
+        const list = document.getElementById("historyList");
+        if (history.length === 0) {
+            list.innerHTML = '<div class="history-empty">Your last 10 results<br>will appear here 👋</div>';
+            return;
+        }
+        list.innerHTML = history.map((item, i) => `
+            <div class="history-item" onclick="loadHistoryItem(${i})">
+                <div class="history-item-mode" style="color:${modeColors[item.mode]}">${modeLabels[item.mode]}</div>
+                <div class="history-item-input">${item.input}</div>
+                <div class="history-item-output">${item.output}</div>
+                <div class="history-item-time">${item.time}</div>
+            </div>
+        `).join("");
+    }
+
+    function addToHistory(mode, input, output) {
+        const history = loadHistory();
+        history.unshift({
+            mode, input, output,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+        if (history.length > 10) history.pop();
+        saveHistory(history);
+        renderHistory();
+    }
+
+    function loadHistoryItem(index) {
+        const history = loadHistory();
+        const item = history[index];
+        document.getElementById("inputText").value = item.input;
+        document.getElementById("output").textContent = item.output;
+        document.getElementById("outputCard").style.display = "block";
+        updateMeta();
+    }
+
+    function clearHistory() {
+        localStorage.removeItem("aipenpal_history");
+        renderHistory();
+    }
+
     async function improve(mode) {
         const text = document.getElementById("inputText").value.trim();
         if (!text) return;
-
         if (mode === "translate") {
             const lang = document.getElementById("langInput").value.trim();
             if (!lang) { alert("Please enter a language to translate to!"); return; }
@@ -135,7 +226,6 @@
 
         const btns = document.querySelectorAll(".btn");
         btns.forEach(b => b.disabled = true);
-
         document.getElementById("progressBar").style.display = "block";
         document.getElementById("outputCard").style.display = "none";
 
@@ -150,6 +240,8 @@
         document.getElementById("progressBar").style.display = "none";
         document.getElementById("outputCard").style.display = "block";
         document.getElementById("output").textContent = data.result;
+
+        addToHistory(mode, text, data.result);
         btns.forEach(b => b.disabled = false);
     }
 
@@ -166,6 +258,8 @@
         document.getElementById("outputCard").style.display = "none";
         updateMeta();
     }
+
+    renderHistory();
 </script>
 </body>
 </html>
