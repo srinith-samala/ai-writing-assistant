@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Writing Assistant</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #e2e8f0; min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 750px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 36px; }
+        .header h1 { font-size: 32px; font-weight: 800; color: #fff; }
+        .header h1 span { color: #818cf8; }
+        .header p { color: #64748b; margin-top: 8px; font-size: 14px; }
+        .card { background: #1e1e2e; border: 1px solid #2a2a3e; border-radius: 14px; padding: 24px; margin-bottom: 20px; }
+        textarea { width: 100%; height: 160px; background: #13131f; border: 1px solid #2a2a3e; border-radius: 10px; padding: 14px; font-size: 15px; color: #e2e8f0; resize: vertical; outline: none; font-family: inherit; transition: border 0.2s; }
+        textarea:focus { border-color: #818cf8; }
+        .char-count { text-align: right; font-size: 11px; color: #475569; margin-top: 6px; }
+        .buttons { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+        button { padding: 11px 22px; border: none; border-radius: 9px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-improve { background: #818cf8; color: white; }
+        .btn-improve:hover { background: #6366f1; }
+        .btn-grammar { background: #34d399; color: #0f1f17; }
+        .btn-grammar:hover { background: #10b981; }
+        .btn-shorter { background: #fb923c; color: white; }
+        .btn-shorter:hover { background: #f97316; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .output-card { background: #1e1e2e; border: 1px solid #2a2a3e; border-radius: 14px; padding: 24px; display: none; }
+        .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .output-label { font-size: 11px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 1px; }
+        .copy-btn { padding: 6px 14px; background: transparent; border: 1px solid #2a2a3e; border-radius: 7px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .copy-btn:hover { border-color: #818cf8; color: #818cf8; }
+        .copy-btn.copied { border-color: #34d399; color: #34d399; }
+        #output { font-size: 15px; color: #e2e8f0; line-height: 1.8; white-space: pre-wrap; }
+        .loading { display: flex; align-items: center; gap: 10px; color: #64748b; font-size: 14px; }
+        .dot { width: 7px; height: 7px; background: #818cf8; border-radius: 50%; animation: bounce 1s infinite; }
+        .dot:nth-child(2) { animation-delay: 0.15s; }
+        .dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✍️ AI Writing <span>Assistant</span></h1>
+            <p>Improve your writing instantly with AI</p>
+        </div>
+
+        <div class="card">
+            <textarea id="inputText" placeholder="Paste your text here..." oninput="updateCount()"></textarea>
+            <div class="char-count"><span id="charCount">0</span> characters</div>
+            <div class="buttons">
+                <button class="btn-improve" onclick="improve('improve')">✨ Improve</button>
+                <button class="btn-grammar" onclick="improve('grammar')">✅ Fix Grammar</button>
+                <button class="btn-shorter" onclick="improve('shorter')">✂️ Make Shorter</button>
+            </div>
+        </div>
+
+        <div class="output-card" id="outputCard">
+            <div class="output-header">
+                <span class="output-label">✦ AI Result</span>
+                <button class="copy-btn" id="copyBtn" onclick="copyText()">Copy</button>
+            </div>
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateCount() {
+            const len = document.getElementById("inputText").value.length;
+            document.getElementById("charCount").textContent = len;
+        }
+
+        async function improve(mode) {
+            const text = document.getElementById("inputText").value.trim();
+            if (!text) return;
+
+            const btns = document.querySelectorAll("button");
+            btns.forEach(b => b.disabled = true);
+
+            const outputCard = document.getElementById("outputCard");
+            const output = document.getElementById("output");
+            outputCard.style.display = "block";
+            output.innerHTML = '<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>AI is thinking...</span></div>';
+
+            const res = await fetch("/improve", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text, mode })
+            });
+            const data = await res.json();
+            output.textContent = data.result;
+            btns.forEach(b => b.disabled = false);
+        }
+
+        function copyText() {
+            const text = document.getElementById("output").textContent;
+            navigator.clipboard.writeText(text);
+            const btn = document.getElementById("copyBtn");
+            btn.textContent = "Copied ✓";
+            btn.classList.add("copied");
+            setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 2000);
+        }
+    </script>
+</body>
+</html>
