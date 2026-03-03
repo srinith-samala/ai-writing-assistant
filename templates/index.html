@@ -1,291 +1,380 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>AiPenPal — AI Writing Assistant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Transform your writing instantly with 6 powerful AI tools. Free forever.">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Geist', sans-serif; background: #05050f; color: #e2e8f0; overflow-x: hidden; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            background: #060612;
-            color: #e2e8f0;
-            overflow-x: hidden;
+        .bg-fixed { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.22; animation: drift 10s ease-in-out infinite; }
+        .orb1 { width: 650px; height: 650px; background: #6366f1; top: -180px; left: -180px; animation-delay: 0s; }
+        .orb2 { width: 550px; height: 550px; background: #8b5cf6; bottom: -120px; right: -120px; animation-delay: 3s; }
+        .orb3 { width: 380px; height: 380px; background: #06b6d4; top: 42%; left: 42%; animation-delay: 6s; }
+        .orb4 { width: 300px; height: 300px; background: #ec4899; bottom: 22%; left: 6%; animation-delay: 1.5s; }
+        @keyframes drift { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(25px,-25px) scale(1.06)} 66%{transform:translate(-20px,20px) scale(0.94)} }
+
+        .page { position: relative; z-index: 1; }
+
+        /* NAVBAR */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(5,5,15,0.8);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0 48px; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
         }
-
-        /* Animated background orbs */
-        .bg {
-            position: fixed; inset: 0; z-index: 0;
-            background: #060612;
-            overflow: hidden;
-        }
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.35;
-            animation: float 8s ease-in-out infinite;
-        }
-        .orb1 { width: 500px; height: 500px; background: #6366f1; top: -100px; left: -100px; animation-delay: 0s; }
-        .orb2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -80px; animation-delay: 2s; }
-        .orb3 { width: 300px; height: 300px; background: #06b6d4; top: 40%; left: 40%; animation-delay: 4s; }
-        .orb4 { width: 250px; height: 250px; background: #ec4899; bottom: 20%; left: 10%; animation-delay: 1s; }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(20px, -20px) scale(1.05); }
-            66% { transform: translate(-15px, 15px) scale(0.95); }
-        }
-
-        .wrapper {
-            position: relative; z-index: 1;
-            min-height: 100vh;
-            padding: 40px 20px 60px;
-        }
-
-        .container { max-width: 900px; margin: 0 auto; }
-
-        /* Glass mixin */
-        .glass {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-        }
-
-        /* Header */
-        .header { text-align: center; margin-bottom: 40px; }
-        .badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(99,102,241,0.2);
-            border: 1px solid rgba(99,102,241,0.4);
-            color: #a5b4fc; font-size: 11px; padding: 5px 16px;
-            border-radius: 20px; letter-spacing: 2px;
-            text-transform: uppercase; margin-bottom: 16px;
-        }
-        .badge::before { content: "●"; color: #6366f1; font-size: 8px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-        .header h1 {
-            font-size: clamp(32px, 5vw, 52px);
-            font-weight: 800; letter-spacing: -2px; line-height: 1.1;
-            background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #ec4899 100%);
+        .nav-logo {
+            font-size: 20px; font-weight: 700; font-family: 'Geist', sans-serif;
+            letter-spacing: -0.8px;
+            background: linear-gradient(135deg, #a5b4fc, #ec4899);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
+            text-decoration: none;
         }
-        .header p { color: rgba(255,255,255,0.35); margin-top: 10px; font-size: 14px; font-weight: 400; }
+        .nav-links { display: flex; align-items: center; gap: 32px; }
+        .nav-links a { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; letter-spacing: -0.2px; }
+        .nav-links a:hover { color: rgba(255,255,255,0.9); }
+        .nav-cta {
+            background: rgba(99,102,241,0.15) !important;
+            border: 1px solid rgba(99,102,241,0.35) !important;
+            color: #a5b4fc !important; padding: 8px 18px;
+            border-radius: 9px; font-weight: 600 !important;
+        }
+        .nav-cta:hover { background: rgba(99,102,241,0.28) !important; color: #fff !important; }
 
-        /* Layout */
-        .main-layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+        /* HERO */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 140px 24px 100px;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25);
+            color: #a5b4fc; font-size: 11px; font-weight: 500;
+            padding: 6px 16px; border-radius: 20px; letter-spacing: 1px;
+            text-transform: uppercase; margin-bottom: 32px; font-family: 'Geist', sans-serif;
+        }
+        .hero-badge::before { content: "●"; font-size: 7px; animation: blink 2s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-        /* Input card */
-        .input-card { padding: 24px; }
+        .hero h1 {
+            font-size: clamp(48px, 7vw, 84px); font-weight: 700;
+            font-family: 'Geist', sans-serif; letter-spacing: -3px;
+            line-height: 1.02; margin-bottom: 24px;
+        }
+        .white { color: #fff; }
+        .grad { background: linear-gradient(135deg, #a5b4fc 0%, #ec4899 55%, #f97316 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
+        .hero-sub {
+            font-size: 17px; color: rgba(255,255,255,0.36);
+            max-width: 500px; line-height: 1.7; margin-bottom: 44px;
+            font-weight: 400; letter-spacing: -0.3px; font-family: 'Geist', sans-serif;
+        }
+
+        .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 52px; }
+        .btn-primary {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none; border-radius: 12px; color: #fff;
+            font-size: 14px; font-weight: 600; font-family: 'Geist', sans-serif;
+            cursor: pointer; text-decoration: none; letter-spacing: -0.3px;
+            transition: all 0.25s; box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(99,102,241,0.5); }
+        .btn-ghost {
+            padding: 14px 28px; background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+            color: rgba(255,255,255,0.55); font-size: 14px; font-weight: 500;
+            font-family: 'Geist', sans-serif; cursor: pointer; text-decoration: none;
+            transition: all 0.25s; letter-spacing: -0.3px;
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,0.08); color: #fff; transform: translateY(-2px); }
+
+        .hero-stats {
+            display: flex; gap: 44px; flex-wrap: wrap; justify-content: center;
+            padding: 28px 44px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07); border-radius: 18px; backdrop-filter: blur(10px);
+        }
+        .stat { text-align: center; }
+        .stat-num { font-size: 26px; font-weight: 700; font-family: 'Geist', sans-serif; color: #fff; letter-spacing: -1px; }
+        .stat-label { font-size: 10px; color: rgba(255,255,255,0.25); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; font-family: 'Geist', sans-serif; }
+
+        /* FEATURES */
+        .features-strip { padding: 100px 24px; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .features-strip-inner { max-width: 960px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 52px; }
+        .section-tag { font-size: 11px; color: #a5b4fc; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; font-family: 'Geist', sans-serif; }
+        .section-title { font-size: clamp(28px, 3.5vw, 42px); font-weight: 700; font-family: 'Geist', sans-serif; letter-spacing: -2px; color: #fff; }
+        .section-sub { font-size: 14px; color: rgba(255,255,255,0.3); margin-top: 10px; font-family: 'Geist', sans-serif; letter-spacing: -0.2px; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+        .feature-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px; padding: 28px 24px; backdrop-filter: blur(10px);
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(99,102,241,0.5), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-card:hover { background: rgba(99,102,241,0.06); border-color: rgba(99,102,241,0.2); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .feature-icon { font-size: 26px; margin-bottom: 14px; display: block; }
+        .feature-name { font-size: 14px; font-weight: 600; font-family: 'Geist', sans-serif; color: #fff; margin-bottom: 8px; letter-spacing: -0.4px; }
+        .feature-desc { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.7; font-family: 'Geist', sans-serif; letter-spacing: -0.1px; }
+
+        /* TOOL */
+        .tool-section { padding: 100px 24px; }
+        .tool-wrapper { max-width: 980px; margin: 0 auto; }
+        .tool-layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+
+        .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; }
+
+        .input-card { padding: 26px; }
         textarea {
-            width: 100%; height: 180px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px; padding: 16px;
-            font-size: 15px; color: #e2e8f0;
-            resize: vertical; outline: none;
-            font-family: 'Inter', sans-serif;
-            transition: border 0.3s; line-height: 1.7;
+            width: 100%; height: 200px; background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,255,255,0.07); border-radius: 14px;
+            padding: 16px; font-size: 15px; color: #e2e8f0; resize: vertical;
+            outline: none; font-family: 'Geist', sans-serif; transition: all 0.3s;
+            line-height: 1.75; letter-spacing: -0.2px;
         }
-        textarea:focus { border-color: rgba(99,102,241,0.6); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
-        textarea::placeholder { color: rgba(255,255,255,0.2); }
-
-        .meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.25); }
-
-        .lang-row {
-            display: flex; align-items: center; gap: 10px;
-            margin-top: 14px; padding-top: 14px;
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-        .lang-row label { font-size: 12px; color: rgba(255,255,255,0.4); white-space: nowrap; }
-        .lang-input {
-            flex: 1; background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px; padding: 8px 14px;
-            color: #e2e8f0; font-size: 13px; outline: none;
-            font-family: 'Inter', sans-serif; transition: border 0.3s;
-        }
-        .lang-input:focus { border-color: rgba(99,102,241,0.5); }
-
-        /* Buttons */
-        .buttons { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 16px; }
-        .btn {
-            padding: 14px 8px; border: none; border-radius: 14px;
-            font-size: 12px; font-weight: 600; cursor: pointer;
-            transition: all 0.25s; display: flex;
-            flex-direction: column; align-items: center; gap: 5px;
-            backdrop-filter: blur(10px); position: relative; overflow: hidden;
-        }
-        .btn::after {
-            content: ""; position: absolute; inset: 0;
-            background: white; opacity: 0; transition: opacity 0.2s;
-        }
-        .btn:hover::after { opacity: 0.05; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-        .btn:active { transform: translateY(0); }
-        .btn span.icon { font-size: 20px; }
-        .btn span.lbl { font-size: 10px; opacity: 0.7; }
-
-        .btn-improve  { background: rgba(99,102,241,0.2);  border: 1px solid rgba(99,102,241,0.35);  color: #a5b4fc; }
-        .btn-grammar  { background: rgba(16,185,129,0.2);  border: 1px solid rgba(16,185,129,0.35);  color: #6ee7b7; }
-        .btn-shorter  { background: rgba(245,158,11,0.2);  border: 1px solid rgba(245,158,11,0.35);  color: #fcd34d; }
-        .btn-expand   { background: rgba(6,182,212,0.2);   border: 1px solid rgba(6,182,212,0.35);   color: #67e8f9; }
-        .btn-summarize{ background: rgba(139,92,246,0.2);  border: 1px solid rgba(139,92,246,0.35);  color: #c4b5fd; }
-        .btn-translate{ background: rgba(236,72,153,0.2);  border: 1px solid rgba(236,72,153,0.35);  color: #f9a8d4; }
-        .btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
-
-        /* Progress */
-        .progress-bar {
-            height: 2px; margin-top: 16px; border-radius: 2px;
-            background: rgba(255,255,255,0.06); overflow: hidden; display: none;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #6366f1, #ec4899, #06b6d4);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s ease-in-out infinite;
-        }
-        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-        /* Output */
-        .output-card { padding: 22px; display: none; margin-top: 14px; animation: fadeUp 0.35s ease; }
-        @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-        .output-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .output-label {
-            font-size: 10px; font-weight: 700; letter-spacing: 2px;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, #a5b4fc, #ec4899);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .output-actions { display: flex; gap: 8px; }
-        .action-btn {
-            padding: 5px 14px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px; color: rgba(255,255,255,0.45);
-            font-size: 11px; cursor: pointer; transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-        .action-btn:hover { border-color: rgba(99,102,241,0.5); color: #a5b4fc; }
-        .action-btn.success { border-color: rgba(16,185,129,0.5); color: #6ee7b7; }
-        #output { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.9; white-space: pre-wrap; }
-
-        /* History */
-        .history-panel { padding: 20px; height: fit-content; position: sticky; top: 20px; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .history-title {
-            font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-            background: linear-gradient(90deg, #a5b4fc, #ec4899);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .clear-btn { font-size: 10px; color: rgba(255,255,255,0.25); background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: color 0.2s; }
-        .clear-btn:hover { color: #f9a8d4; }
-        .history-empty { text-align: center; padding: 32px 10px; color: rgba(255,255,255,0.2); font-size: 12px; line-height: 2; }
-        .history-empty span { font-size: 28px; display: block; margin-bottom: 8px; }
-
-        .history-item {
-            background: rgba(0,0,0,0.25);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 12px; padding: 12px;
-            margin-bottom: 8px; cursor: pointer;
-            transition: all 0.2s;
-        }
-        .history-item:hover { border-color: rgba(99,102,241,0.4); background: rgba(99,102,241,0.08); transform: translateX(3px); }
-        .history-item-mode { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .history-item-input { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .history-item-output { font-size: 11px; color: rgba(255,255,255,0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .history-item-time { font-size: 9px; color: rgba(255,255,255,0.18); margin-top: 6px; }
-
-        /* Divider */
+        textarea:focus { border-color: rgba(99,102,241,0.45); box-shadow: 0 0 0 3px rgba(99,102,241,0.08); }
+        textarea::placeholder { color: rgba(255,255,255,0.15); }
+        .meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.2); font-family: 'Geist', sans-serif; }
         .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 14px 0; }
+        .lang-row { display: flex; align-items: center; gap: 10px; }
+        .lang-row label { font-size: 12px; color: rgba(255,255,255,0.3); white-space: nowrap; font-family: 'Geist', sans-serif; letter-spacing: -0.2px; }
+        .lang-input {
+            flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px; padding: 8px 14px; color: #e2e8f0; font-size: 13px;
+            outline: none; font-family: 'Geist', sans-serif; transition: border 0.3s; letter-spacing: -0.2px;
+        }
+        .lang-input:focus { border-color: rgba(99,102,241,0.4); }
 
-        @media(max-width:700px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .buttons { grid-template-columns: repeat(2,1fr); }
+        .action-buttons { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 16px; }
+        .ai-btn {
+            padding: 15px 8px; border: none; border-radius: 13px;
+            font-size: 12px; font-weight: 600; font-family: 'Geist', sans-serif;
+            cursor: pointer; transition: all 0.25s;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            position: relative; overflow: hidden; letter-spacing: -0.2px;
+        }
+        .ai-btn::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent); opacity: 0; transition: opacity 0.25s; }
+        .ai-btn:hover::before { opacity: 1; }
+        .ai-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,0.35); }
+        .ai-btn:active { transform: translateY(0); }
+        .ai-btn span.icon { font-size: 19px; }
+        .ai-btn span.lbl { font-size: 10px; opacity: 0.55; font-weight: 400; }
+        .ai-btn:disabled { opacity: 0.22; cursor: not-allowed; transform: none !important; }
+
+        .ai-btn.improve   { background: rgba(99,102,241,0.16);  border: 1px solid rgba(99,102,241,0.28);  color: #a5b4fc; }
+        .ai-btn.grammar   { background: rgba(16,185,129,0.16);  border: 1px solid rgba(16,185,129,0.28);  color: #6ee7b7; }
+        .ai-btn.shorter   { background: rgba(245,158,11,0.16);  border: 1px solid rgba(245,158,11,0.28);  color: #fcd34d; }
+        .ai-btn.expand    { background: rgba(6,182,212,0.16);   border: 1px solid rgba(6,182,212,0.28);   color: #67e8f9; }
+        .ai-btn.summarize { background: rgba(139,92,246,0.16);  border: 1px solid rgba(139,92,246,0.28);  color: #c4b5fd; }
+        .ai-btn.translate { background: rgba(236,72,153,0.16);  border: 1px solid rgba(236,72,153,0.28);  color: #f9a8d4; }
+
+        .progress-bar { height: 2px; margin-top: 16px; border-radius: 2px; background: rgba(255,255,255,0.06); overflow: hidden; display: none; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg,#6366f1,#ec4899,#06b6d4,#6366f1); background-size: 300% 100%; animation: shimmer 2s linear infinite; }
+        @keyframes shimmer { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+
+        .output-card { padding: 22px; display: none; margin-top: 14px; animation: fadeUp 0.3s ease; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .output-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .output-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(90deg,#a5b4fc,#ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Geist', sans-serif; }
+        .out-btns { display: flex; gap: 8px; }
+        .out-btn { padding: 5px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; color: rgba(255,255,255,0.36); font-size: 11px; cursor: pointer; transition: all 0.2s; font-family: 'Geist', sans-serif; font-weight: 500; letter-spacing: -0.2px; }
+        .out-btn:hover { border-color: rgba(99,102,241,0.4); color: #a5b4fc; }
+        .out-btn.ok { border-color: rgba(16,185,129,0.4); color: #6ee7b7; }
+        #output { font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.85; white-space: pre-wrap; font-family: 'Geist', sans-serif; letter-spacing: -0.2px; }
+
+        /* HISTORY */
+        .history-panel { padding: 20px; position: sticky; top: 84px; height: fit-content; max-height: calc(100vh - 104px); overflow-y: auto; }
+        .history-panel::-webkit-scrollbar { width: 3px; }
+        .history-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+        .history-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .history-ttl { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(90deg,#a5b4fc,#ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Geist', sans-serif; }
+        .clr-btn { font-size: 11px; color: rgba(255,255,255,0.2); background: none; border: none; cursor: pointer; font-family: 'Geist', sans-serif; transition: color 0.2s; letter-spacing: -0.2px; }
+        .clr-btn:hover { color: #f9a8d4; }
+        .h-empty { text-align: center; padding: 32px 10px; color: rgba(255,255,255,0.16); font-size: 12px; line-height: 2; font-family: 'Geist', sans-serif; }
+        .h-empty span { font-size: 24px; display: block; margin-bottom: 8px; opacity: 0.4; }
+        .h-item { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.22s; }
+        .h-item:hover { border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.06); transform: translateX(3px); }
+        .h-mode { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-family: 'Geist', sans-serif; }
+        .h-input { font-size: 11px; color: rgba(255,255,255,0.28); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; font-family: 'Geist', sans-serif; }
+        .h-output { font-size: 11px; color: rgba(255,255,255,0.48); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Geist', sans-serif; }
+        .h-time { font-size: 9px; color: rgba(255,255,255,0.14); margin-top: 6px; font-family: 'Geist', sans-serif; }
+
+        /* FOOTER */
+        footer { border-top: 1px solid rgba(255,255,255,0.06); padding: 56px 48px 36px; margin-top: 60px; }
+        .footer-inner { max-width: 980px; margin: 0 auto; }
+        .footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; margin-bottom: 44px; }
+        .footer-brand .logo { font-size: 18px; font-weight: 700; font-family: 'Geist', sans-serif; background: linear-gradient(135deg,#a5b4fc,#ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; letter-spacing: -0.5px; }
+        .footer-brand p { font-size: 12px; color: rgba(255,255,255,0.22); max-width: 200px; line-height: 1.8; font-family: 'Geist', sans-serif; letter-spacing: -0.1px; }
+        .footer-links h4 { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; font-family: 'Geist', sans-serif; }
+        .footer-links a { display: block; font-size: 13px; color: rgba(255,255,255,0.24); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; font-family: 'Geist', sans-serif; letter-spacing: -0.2px; }
+        .footer-links a:hover { color: rgba(255,255,255,0.75); }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-bottom p { font-size: 11px; color: rgba(255,255,255,0.17); font-family: 'Geist', sans-serif; letter-spacing: -0.1px; }
+        .footer-bottom span { font-size: 11px; color: rgba(255,255,255,0.17); font-family: 'Geist', sans-serif; }
+
+        @media(max-width:768px) {
+            nav { padding: 0 20px; }
+            .nav-links a:not(.nav-cta) { display: none; }
+            .hero { padding: 110px 20px 70px; }
+            .hero h1 { letter-spacing: -2px; }
+            .features-grid { grid-template-columns: repeat(2,1fr); }
+            .tool-layout { grid-template-columns: 1fr; }
+            .action-buttons { grid-template-columns: repeat(2,1fr); }
+            .hero-stats { gap: 24px; padding: 22px 28px; }
+            footer { padding: 44px 24px 32px; }
+            .footer-top { flex-direction: column; gap: 28px; }
         }
     </style>
 </head>
 <body>
-<div class="bg">
+<div class="bg-fixed">
     <div class="orb orb1"></div>
     <div class="orb orb2"></div>
     <div class="orb orb3"></div>
     <div class="orb orb4"></div>
 </div>
 
-<div class="wrapper">
-<div class="container">
-    <div class="header">
-        <div class="badge">AI Powered Writing</div>
-        <h1>AiPenPal</h1>
-        <p>6 powerful AI tools to transform your writing instantly</p>
-    </div>
+<div class="page">
+    <nav>
+        <a href="#" class="nav-logo">AiPenPal</a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#tool">Try it</a>
+            <a href="#tool" class="nav-cta">Start Free →</a>
+        </div>
+    </nav>
 
-    <div class="main-layout">
-        <div>
-            <div class="glass input-card">
-                <textarea id="inputText" placeholder="Start writing or paste your text here..." oninput="updateMeta()"></textarea>
-                <div class="meta">
-                    <span>📝 <span id="wordCount">0</span> words</span>
-                    <span><span id="charCount">0</span> characters</span>
-                </div>
-                <div class="divider"></div>
-                <div class="lang-row">
-                    <label>🌍 Translate to:</label>
-                    <input class="lang-input" id="langInput" placeholder="e.g. Hindi, Spanish, French..." />
-                </div>
-                <div class="buttons">
-                    <button class="btn btn-improve" onclick="improve('improve')">
-                        <span class="icon">✨</span><span>Improve</span><span class="lbl">Make it better</span>
-                    </button>
-                    <button class="btn btn-grammar" onclick="improve('grammar')">
-                        <span class="icon">✅</span><span>Fix Grammar</span><span class="lbl">Fix mistakes</span>
-                    </button>
-                    <button class="btn btn-shorter" onclick="improve('shorter')">
-                        <span class="icon">✂️</span><span>Shorten</span><span class="lbl">Make it brief</span>
-                    </button>
-                    <button class="btn btn-expand" onclick="improve('expand')">
-                        <span class="icon">📝</span><span>Expand</span><span class="lbl">Add more detail</span>
-                    </button>
-                    <button class="btn btn-summarize" onclick="improve('summarize')">
-                        <span class="icon">📋</span><span>Summarize</span><span class="lbl">Key points</span>
-                    </button>
-                    <button class="btn btn-translate" onclick="improve('translate')">
-                        <span class="icon">🌍</span><span>Translate</span><span class="lbl">Any language</span>
-                    </button>
-                </div>
-                <div class="progress-bar" id="progressBar"><div class="progress-fill"></div></div>
+    <section class="hero" id="home">
+        <div class="hero-badge">✦ Free AI Writing Tool</div>
+        <h1>
+            <span class="white">Write better,</span><br>
+            <span class="grad">think smarter.</span>
+        </h1>
+        <p class="hero-sub">6 powerful AI tools to improve, fix, expand, summarize and translate your writing — instantly and completely free.</p>
+        <div class="hero-btns">
+            <a href="#tool" class="btn-primary">✨ Try it Free</a>
+            <a href="#features" class="btn-ghost">See Features →</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat"><div class="stat-num">6</div><div class="stat-label">AI Tools</div></div>
+            <div class="stat"><div class="stat-num">Free</div><div class="stat-label">Forever</div></div>
+            <div class="stat"><div class="stat-num">&lt;3s</div><div class="stat-label">Response</div></div>
+            <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Languages</div></div>
+        </div>
+    </section>
+
+    <section class="features-strip" id="features">
+        <div class="features-strip-inner">
+            <div class="section-header">
+                <div class="section-tag">✦ What it does</div>
+                <h2 class="section-title">Everything you need to write better</h2>
+                <p class="section-sub">Six tools, one place, zero cost.</p>
             </div>
+            <div class="features-grid">
+                <div class="feature-card"><span class="feature-icon">✨</span><div class="feature-name">Improve Writing</div><div class="feature-desc">Makes your text clearer, more engaging and professional in seconds.</div></div>
+                <div class="feature-card"><span class="feature-icon">✅</span><div class="feature-name">Fix Grammar</div><div class="feature-desc">Catches every grammar, spelling and punctuation mistake automatically.</div></div>
+                <div class="feature-card"><span class="feature-icon">✂️</span><div class="feature-name">Shorten Text</div><div class="feature-desc">Cuts the fluff and keeps only what truly matters.</div></div>
+                <div class="feature-card"><span class="feature-icon">📝</span><div class="feature-name">Expand Text</div><div class="feature-desc">Adds depth, examples and detail to make short text more compelling.</div></div>
+                <div class="feature-card"><span class="feature-icon">📋</span><div class="feature-name">Summarize</div><div class="feature-desc">Extracts the key bullet points from any long piece of text.</div></div>
+                <div class="feature-card"><span class="feature-icon">🌍</span><div class="feature-name">Translate</div><div class="feature-desc">Translates accurately to any language in the world instantly.</div></div>
+            </div>
+        </div>
+    </section>
 
-            <div class="glass output-card" id="outputCard">
-                <div class="output-top">
-                    <span class="output-label">✦ AI Result</span>
-                    <div class="output-actions">
-                        <button class="action-btn" id="copyBtn" onclick="copyText()">Copy</button>
-                        <button class="action-btn" onclick="clearAll()">Clear</button>
+    <section class="tool-section" id="tool">
+        <div class="section-header">
+            <div class="section-tag">✦ The Tool</div>
+            <h2 class="section-title">Try it right now — it's free</h2>
+            <p class="section-sub">Paste your text, pick a tool, watch AI do the work.</p>
+        </div>
+        <div class="tool-wrapper">
+            <div class="tool-layout">
+                <div>
+                    <div class="glass input-card">
+                        <textarea id="inputText" placeholder="Paste or type your text here..." oninput="updateMeta()"></textarea>
+                        <div class="meta">
+                            <span>📝 <span id="wordCount">0</span> words</span>
+                            <span><span id="charCount">0</span> characters</span>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="lang-row">
+                            <label>🌍 Translate to:</label>
+                            <input class="lang-input" id="langInput" placeholder="e.g. Hindi, Spanish, French..." />
+                        </div>
+                        <div class="action-buttons">
+                            <button class="ai-btn improve" onclick="improve('improve')"><span class="icon">✨</span><span>Improve</span><span class="lbl">Make it better</span></button>
+                            <button class="ai-btn grammar" onclick="improve('grammar')"><span class="icon">✅</span><span>Fix Grammar</span><span class="lbl">Fix mistakes</span></button>
+                            <button class="ai-btn shorter" onclick="improve('shorter')"><span class="icon">✂️</span><span>Shorten</span><span class="lbl">Make it brief</span></button>
+                            <button class="ai-btn expand" onclick="improve('expand')"><span class="icon">📝</span><span>Expand</span><span class="lbl">Add detail</span></button>
+                            <button class="ai-btn summarize" onclick="improve('summarize')"><span class="icon">📋</span><span>Summarize</span><span class="lbl">Key points</span></button>
+                            <button class="ai-btn translate" onclick="improve('translate')"><span class="icon">🌍</span><span>Translate</span><span class="lbl">Any language</span></button>
+                        </div>
+                        <div class="progress-bar" id="progressBar"><div class="progress-fill"></div></div>
+                    </div>
+                    <div class="glass output-card" id="outputCard">
+                        <div class="output-top">
+                            <span class="output-label">✦ AI Result</span>
+                            <div class="out-btns">
+                                <button class="out-btn" id="copyBtn" onclick="copyText()">Copy</button>
+                                <button class="out-btn" onclick="clearAll()">Clear</button>
+                            </div>
+                        </div>
+                        <div id="output"></div>
                     </div>
                 </div>
-                <div id="output"></div>
+                <div class="glass history-panel">
+                    <div class="history-hdr">
+                        <span class="history-ttl">📜 History</span>
+                        <button class="clr-btn" onclick="clearHistory()">Clear all</button>
+                    </div>
+                    <div id="historyList">
+                        <div class="h-empty"><span>✦</span>Your last 10 results<br>will appear here</div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="glass history-panel">
-            <div class="history-header">
-                <span class="history-title">📜 History</span>
-                <button class="clear-btn" onclick="clearHistory()">Clear all</button>
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">AiPenPal</div>
+                    <p>Free AI writing tools for everyone. Built with ❤️ and zero investment.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Tools</h4>
+                    <a href="#tool">Improve Writing</a>
+                    <a href="#tool">Fix Grammar</a>
+                    <a href="#tool">Summarize</a>
+                    <a href="#tool">Translate</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <a href="#features">Features</a>
+                    <a href="#tool">Try Free</a>
+                    <a href="https://github.com/srinith-samala/ai-writing-assistant" target="_blank">GitHub</a>
+                </div>
             </div>
-            <div id="historyList">
-                <div class="history-empty"><span>✦</span>Your last 10 results<br>will appear here</div>
+            <div class="footer-bottom">
+                <p>© 2026 AiPenPal. Built by Srinith Samala.</p>
+                <span>Free forever · No login required · No data stored</span>
             </div>
         </div>
-    </div>
-</div>
+    </footer>
 </div>
 
 <script>
@@ -304,13 +393,13 @@
     function renderHistory() {
         const h = loadHistory();
         const list = document.getElementById("historyList");
-        if (!h.length) { list.innerHTML = '<div class="history-empty"><span>✦</span>Your last 10 results<br>will appear here</div>'; return; }
+        if (!h.length) { list.innerHTML = '<div class="h-empty"><span>✦</span>Your last 10 results<br>will appear here</div>'; return; }
         list.innerHTML = h.map((item,i) => `
-            <div class="history-item" onclick="loadHistoryItem(${i})">
-                <div class="history-item-mode" style="color:${modeColors[item.mode]}">${modeLabels[item.mode]}</div>
-                <div class="history-item-input">${item.input}</div>
-                <div class="history-item-output">${item.output}</div>
-                <div class="history-item-time">${item.time}</div>
+            <div class="h-item" onclick="loadHistoryItem(${i})">
+                <div class="h-mode" style="color:${modeColors[item.mode]}">${modeLabels[item.mode]}</div>
+                <div class="h-input">${item.input}</div>
+                <div class="h-output">${item.output}</div>
+                <div class="h-time">${item.time}</div>
             </div>`).join("");
     }
 
@@ -327,6 +416,7 @@
         document.getElementById("output").textContent = item.output;
         document.getElementById("outputCard").style.display = "block";
         updateMeta();
+        document.getElementById("tool").scrollIntoView({behavior:"smooth"});
     }
 
     function clearHistory() { localStorage.removeItem("aipenpal_history"); renderHistory(); }
@@ -335,29 +425,27 @@
         const text = document.getElementById("inputText").value.trim();
         if (!text) return;
         if (mode==="translate" && !document.getElementById("langInput").value.trim()) { alert("Please enter a language!"); return; }
-
-        document.querySelectorAll(".btn").forEach(b => b.disabled = true);
+        document.querySelectorAll(".ai-btn").forEach(b => b.disabled = true);
         document.getElementById("progressBar").style.display = "block";
         document.getElementById("outputCard").style.display = "none";
-
         const res = await fetch("/improve", {
             method: "POST", headers: {"Content-Type":"application/json"},
             body: JSON.stringify({ text, mode, lang: document.getElementById("langInput").value.trim() })
         });
         const data = await res.json();
-
         document.getElementById("progressBar").style.display = "none";
         document.getElementById("outputCard").style.display = "block";
         document.getElementById("output").textContent = data.result;
         addToHistory(mode, text, data.result);
-        document.querySelectorAll(".btn").forEach(b => b.disabled = false);
+        document.querySelectorAll(".ai-btn").forEach(b => b.disabled = false);
+        document.getElementById("outputCard").scrollIntoView({behavior:"smooth", block:"nearest"});
     }
 
     function copyText() {
         navigator.clipboard.writeText(document.getElementById("output").textContent);
         const btn = document.getElementById("copyBtn");
-        btn.textContent = "Copied ✓"; btn.classList.add("success");
-        setTimeout(()=>{ btn.textContent="Copy"; btn.classList.remove("success"); }, 2000);
+        btn.textContent = "Copied ✓"; btn.classList.add("ok");
+        setTimeout(()=>{ btn.textContent="Copy"; btn.classList.remove("ok"); }, 2000);
     }
 
     function clearAll() {
